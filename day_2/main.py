@@ -35,6 +35,16 @@ def games_below_max(data, max_red, max_green, max_blue):
         if r<=max_red and g<=max_green and b<=max_blue:
             yield game
 
+def game_power(data):
+    for game, reveals in data:
+        r,g,b = list(map(max, zip(*reveals)))
+        yield r*g*b
+
+
 if __name__ == '__main__':
     data = get_input()
+    # part 1 - 2416
     print(sum(games_below_max(data, 12, 13, 14)))
+    # part 2 - 63307
+    print(sum(game_power(data)))
+
