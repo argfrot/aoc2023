@@ -1,4 +1,6 @@
 from collections import defaultdict
+from functools import reduce
+import operator
 
 def get_example_input():
     with open('day_3/example.txt', 'r') as f:
@@ -110,12 +112,33 @@ def search_for_parts(grid):
                         part_ids.add(other_cell.part_id)
     return [grid.get_cell(row, col).part_number for (row,col) in part_ids]
 
+def search_for_gears(grid):
+    gear_ratios = []
+    for row in range(grid.num_rows):
+        for col in range(grid.num_cols):
+            cell = grid.get_cell(row, col)
+            if cell.val == '*':
+                parts = set()
+                for other_cell in grid.neighbours(cell):
+                    if other_cell.part_number:
+                        parts.add(other_cell.part_id)
+                if len(parts) == 2:
+                    part_numbers = [grid.get_cell(r,c).part_number for (r,c) in parts]
+                    gear_ratios.append(reduce(operator.mul, part_numbers, 1))
+    return gear_ratios
+
 if __name__ == '__main__':
     data = get_input()
     grid = generate_grid(data)
-    parts = search_for_parts(grid)
+
     # part 1 - 532445
+    parts = search_for_parts(grid)
     print(sum(parts))
+
+    # part 2 - 79842967
+    gears = search_for_gears(grid)
+    print(sum(gears))
+
     # grid.draw_grid()
     # print([(c.row, c.col) for c in grid.neighbours(grid.get_cell(9,9))])
     # grid.draw_grid(highlight=[(c.row,c.col) for c in grid.neighbours(grid.get_cell(0,0))])
