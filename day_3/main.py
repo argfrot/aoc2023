@@ -44,18 +44,22 @@ class Grid:
             yield self.get_cell(row, col)
 
     def clip_row(self, row):
-        return min(self.num_rows, max(row, 0))
+        return min(self.num_rows-1, max(row, 0))
 
     def clip_col(self, col):
-        return min(self.num_cols, max(col, 0))
+        return min(self.num_cols-1, max(col, 0))
+
+    def would_clip(self, row, col):
+        return row < 0 or row >= self.num_rows or col < 0 or col >= self.num_cols
 
     def neighbours(self, cell):
-        for row in range(self.clip_row(cell.row-1), self.clip_row(cell.row+2)):
-            for col in range(self.clip_col(cell.col-1), self.clip_col(cell.col+2)):
+        for row in range(self.clip_row(cell.row-1), self.clip_row(cell.row+1)+1):
+            for col in range(self.clip_col(cell.col-1), self.clip_col(cell.col+1)+1):
                 if row != cell.row or col != cell.col:
                     yield self.get_cell(row, col)
 
     def draw_grid(self, highlight=[]):
+        print(f'{self.num_rows=} {self.num_cols=}')
         for row in range(self.num_rows):
             for col in range(self.num_cols):
                 if (row,col) in highlight:
@@ -113,7 +117,10 @@ if __name__ == '__main__':
     # part 1 - 532445
     print(sum(parts))
     # grid.draw_grid()
-    # print([(c.row, c.col) for c in grid.neighbours(grid.get_cell(0,0))])
+    # print([(c.row, c.col) for c in grid.neighbours(grid.get_cell(9,9))])
     # grid.draw_grid(highlight=[(c.row,c.col) for c in grid.neighbours(grid.get_cell(0,0))])
     # grid.draw_grid(highlight=[(c.row,c.col) for c in grid.neighbours(grid.get_cell(grid.num_rows-1,grid.num_cols-1))])
     # grid.draw_grid(highlight=[(c.row,c.col) for c in grid.neighbours(grid.get_cell(5,5))])
+    # for i in range(9, 11):
+    #     for j in range(9, 11):
+    #         print(f'{i=} {j=} {grid.clip_row(i)} {grid.clip_col(j)}')
